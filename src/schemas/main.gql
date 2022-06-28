@@ -1,0 +1,5 @@
+type Query {
+  hello(name: String!): String!
+  post(id: ID!): Post!
+  user(id: ID!): User!
+}
