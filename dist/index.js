@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.db = void 0;
 const path_1 = require("path");
 require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
@@ -20,9 +21,9 @@ const user_1 = require("./resolvers/user");
 console.log(process.env.DB_URL);
 const client = new MongoClient(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 client.connect(() => console.log('Connected to database'));
-const db = client.db();
+exports.db = client.db();
 const insertPost = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield db.collection('posts').insertOne({
+    yield exports.db.collection('posts').insertOne({
         title: 'first post',
         content: 'the content'
     });

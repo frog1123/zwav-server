@@ -15,7 +15,7 @@ console.log(process.env.DB_URL);
 
 const client = new MongoClient(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 client.connect(() => console.log('Connected to database'));
-const db = client.db();
+export const db = client.db();
 
 const insertPost = async () => {
   await db.collection('posts').insertOne({
