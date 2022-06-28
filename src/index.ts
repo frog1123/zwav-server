@@ -1,6 +1,7 @@
 import { Url } from 'url';
 import { join } from 'path';
 require('dotenv').config();
+const gradient = require('gradient-string');
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
@@ -9,23 +10,14 @@ import { loadSchemaSync } from '@graphql-tools/load';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 
 import { post } from './resolvers/post';
-import { user } from './resolvers/user';
 
-console.log(process.env.DB_URL);
+const color = gradient(['#436ebc', 'f00']);
 
-const client = new MongoClient(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-client.connect(() => console.log('Connected to database'));
+const client = new MongoClient(process.env.DB_URL);
+client.connect(() => console.log(`🌴 Connected to ${color('database')}`));
 export const db = client.db();
 
-const insertPost = async () => {
-  await db.collection('posts').insertOne({
-    title: 'first post',
-    content: 'the content'
-  });
-};
-// insertPost();
-
 const schema = loadSchemaSync(join('src', './schemas/*.gql'), { loaders: [new GraphQLFileLoader()] });
-const server = new ApolloServer({ typeDefs: schema, resolvers: [post, user] });
+const server = new ApolloServer({ typeDefs: schema, resolvers: [post] });
 
-server.listen(9000).then(({ url }: { url: Url }) => console.log(`Server listening on ${url}`));
+server.listen(9000).then(({ url }: { url: Url }) => console.log(`🌴 Server listening on ${color(url)}`));
