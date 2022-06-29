@@ -1,6 +1,6 @@
 type Post {
-  id: ID!
   author: ID!
   title: String!
   content: String
+  createdAt: String!
 }

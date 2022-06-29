@@ -4,5 +4,5 @@ type Query {
 }
 
 type Mutation {
-  createPost(author: ID!, title: String!, content: String): Post!
+  createPost(author: ID!, title: String!, content: String, createdAt: String!): Post!
 }

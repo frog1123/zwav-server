@@ -15,11 +15,12 @@ const index_1 = require("../index");
 exports.post = {
     Query: {
         post: (_, { id }) => __awaiter(void 0, void 0, void 0, function* () {
-            const { author, title, content } = yield index_1.db.collection('posts').findOne({ _id: new mongodb_1.ObjectId(id) });
+            const { author, title, content, createdAt } = yield index_1.db.collection('posts').findOne({ _id: new mongodb_1.ObjectId(id) });
             return {
                 author: author,
                 title: title,
-                content: content
+                content: content,
+                createdAt: createdAt
             };
         }),
         posts: () => __awaiter(void 0, void 0, void 0, function* () {
@@ -28,11 +29,12 @@ exports.post = {
         })
     },
     Mutation: {
-        createPost: (_, { author, title, content }) => __awaiter(void 0, void 0, void 0, function* () {
+        createPost: (_, { author, title, content, createdAt }) => __awaiter(void 0, void 0, void 0, function* () {
             const post = yield index_1.db.collection('posts').insertOne({
                 author: author,
                 title: title,
-                content: content
+                content: content,
+                createdAt: createdAt
             });
             return yield index_1.db.collection('posts').findOne({ _id: post.insertedId });
         })
