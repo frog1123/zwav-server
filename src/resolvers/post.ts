@@ -14,7 +14,7 @@ export const post = {
       };
     },
     posts: async () => {
-      const posts = await db.collection('posts').find({}).toArray();
+      const posts = await db.collection('posts').find({}).sort({ $natural: -1 }).toArray();
       return posts;
     }
   },

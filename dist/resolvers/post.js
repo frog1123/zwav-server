@@ -24,7 +24,7 @@ exports.post = {
             };
         }),
         posts: () => __awaiter(void 0, void 0, void 0, function* () {
-            const posts = yield index_1.db.collection('posts').find({}).toArray();
+            const posts = yield index_1.db.collection('posts').find({}).sort({ $natural: -1 }).toArray();
             return posts;
         })
     },
