@@ -15,7 +15,7 @@ export const post = {
       };
     },
     posts: async () => {
-      const posts = await db.collection('posts').find({}).sort({ $natural: -1 }).toArray();
+      const posts = await db.collection('posts').find({}).limit(30).sort({ $natural: -1 }).toArray();
 
       const postsWithIDs = posts.map((obj: any, index: number) => ({ ...obj, id: posts[index]._id }));
       return postsWithIDs;
