@@ -23,6 +23,8 @@ export const post = {
   },
   Mutation: {
     createPost: async (_: any, { author, title, content, createdAt }: { author: string; title: string; content: string; createdAt: string }) => {
+      if (title.length === 0) return;
+
       const post = await db.collection('posts').insertOne({
         author: author,
         title: title,

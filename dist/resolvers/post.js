@@ -32,6 +32,8 @@ exports.post = {
     },
     Mutation: {
         createPost: (_, { author, title, content, createdAt }) => __awaiter(void 0, void 0, void 0, function* () {
+            if (title.length === 0)
+                return;
             const post = yield index_1.db.collection('posts').insertOne({
                 author: author,
                 title: title,
