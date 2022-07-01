@@ -15,8 +15,9 @@ const index_1 = require("../index");
 exports.post = {
     Query: {
         post: (_, { id }) => __awaiter(void 0, void 0, void 0, function* () {
-            const { author, title, content, createdAt } = yield index_1.db.collection('posts').findOne({ _id: new mongodb_1.ObjectId(id) });
+            const { _id, author, title, content, createdAt } = yield index_1.db.collection('posts').findOne({ _id: new mongodb_1.ObjectId(id) });
             return {
+                id: _id,
                 author: author,
                 title: title,
                 content: content,
@@ -25,7 +26,8 @@ exports.post = {
         }),
         posts: () => __awaiter(void 0, void 0, void 0, function* () {
             const posts = yield index_1.db.collection('posts').find({}).sort({ $natural: -1 }).toArray();
-            return posts;
+            const postsWithIDs = posts.map((obj, index) => (Object.assign(Object.assign({}, obj), { id: posts[index]._id })));
+            return postsWithIDs;
         })
     },
     Mutation: {

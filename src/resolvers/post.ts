@@ -4,9 +4,10 @@ import { db } from '../index';
 export const post = {
   Query: {
     post: async (_: any, { id }: { id: string }) => {
-      const { author, title, content, createdAt } = await db.collection('posts').findOne({ _id: new ObjectId(id) });
+      const { _id, author, title, content, createdAt } = await db.collection('posts').findOne({ _id: new ObjectId(id) });
 
       return {
+        id: _id,
         author: author,
         title: title,
         content: content,
@@ -15,7 +16,9 @@ export const post = {
     },
     posts: async () => {
       const posts = await db.collection('posts').find({}).sort({ $natural: -1 }).toArray();
-      return posts;
+
+      const postsWithIDs = posts.map((obj: any, index: number) => ({ ...obj, id: posts[index]._id }));
+      return postsWithIDs;
     }
   },
   Mutation: {
