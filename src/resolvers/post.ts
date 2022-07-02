@@ -4,7 +4,7 @@ import { db } from '../index';
 export const post = {
   Query: {
     post: async (_: any, { id }: { id: string }) => {
-      const { _id, author, title, content, comments, createdAt } = await db.collection('posts').findOne({ _id: new ObjectId(id) });
+      const { author, title, content, comments, createdAt } = await db.collection('posts').findOne({ _id: new ObjectId(id) });
 
       return {
         id,
@@ -34,26 +34,32 @@ export const post = {
         comments: []
       });
 
-      return await db.collection('posts').findOne({ _id: post.insertedId });
+      const postWithIDs = await db.collection('posts').findOne({ _id: post.insertedId });
+      postWithIDs.id = post.insertedId;
+
+      return postWithIDs;
     },
     createComment: async (_: any, { postId, author, content, createdAt }: { postId: string; author: string; content: string; createdAt: string }) => {
       if (content.length === 0) return;
+
+      const commentId = new ObjectId();
 
       await db.collection('posts').updateOne(
         { _id: new ObjectId(postId) },
         {
           $push: {
             comments: {
-              _id: new ObjectId(),
+              _id: commentId,
               author,
               content,
               createdAt
             }
           }
-        }
+        },
+        { upsert: true }
       );
 
-      return await db.collection('posts').findOne({ _id: new ObjectId(postId) });
+      return true;
     }
   }
 };
