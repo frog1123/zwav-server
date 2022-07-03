@@ -34,10 +34,7 @@ export const post = {
         comments: []
       });
 
-      const postWithIDs = await db.collection('posts').findOne({ _id: post.insertedId });
-      postWithIDs.id = post.insertedId;
-
-      return postWithIDs;
+      return 'success';
     },
     createComment: async (_: any, { postId, author, content, createdAt }: { postId: string; author: string; content: string; createdAt: string }) => {
       if (content.length === 0) return;
@@ -59,7 +56,7 @@ export const post = {
         { upsert: true }
       );
 
-      return true;
+      return 'success';
     }
   }
 };
