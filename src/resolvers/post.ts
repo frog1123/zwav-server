@@ -12,7 +12,10 @@ export const post = {
         title,
         content,
         createdAt,
-        comments
+        comments: await db
+          .collection('comments')
+          .find({ replyingTo: new ObjectId(id) })
+          .toArray()
       };
     },
     posts: async (_: any, { limit, offset }: { limit: number; offset: number }) => {
@@ -27,35 +30,12 @@ export const post = {
     createPost: async (_: any, { author, title, content, createdAt }: { author: string; title: string; content: string; createdAt: string }) => {
       if (title.length === 0) return;
 
-      const post = await db.collection('posts').insertOne({
+      await db.collection('posts').insertOne({
         author,
         title,
         content,
-        createdAt,
-        comments: []
+        createdAt
       });
-
-      return 'success';
-    },
-    createComment: async (_: any, { postId, author, content, createdAt }: { postId: string; author: string; content: string; createdAt: string }) => {
-      if (content.length === 0) return;
-
-      const commentId = new ObjectId();
-
-      await db.collection('posts').updateOne(
-        { _id: new ObjectId(postId) },
-        {
-          $push: {
-            comments: {
-              _id: commentId,
-              author,
-              content,
-              createdAt
-            }
-          }
-        },
-        { upsert: true }
-      );
 
       return 'success';
     }
