@@ -8,7 +8,6 @@ export const comment = {
 
       await db.collection('comments').insertOne({
         replyingTo: new ObjectId(postId),
-        _id: new ObjectId(),
         author,
         content,
         createdAt
