@@ -15,13 +15,14 @@ export const post = {
         comments
       };
     },
-    posts: async () => {
-      const posts = await db.collection('posts').find({}).limit(30).sort({ $natural: -1 }).toArray();
+    posts: async (_: any, { limit, offset }: { limit: number; offset: number }) => {
+      const posts = await db.collection('posts').find({}).skip(offset).limit(limit).sort({ createdAt: -1 }).toArray();
 
       const postsWithIDs = posts.map((obj: any, index: number) => ({ ...obj, id: posts[index]._id }));
       return postsWithIDs;
     }
   },
+
   Mutation: {
     createPost: async (_: any, { author, title, content, createdAt }: { author: string; title: string; content: string; createdAt: string }) => {
       if (title.length === 0) return;
