@@ -1,4 +1,12 @@
 type User {
   id: ID!
   username: String!
+  posts: [Post!]!
+  comments: [Comment!]!
+  createdAt: String!
+}
+
+type LoginResponse {
+  id: ID
+  response: String!
 }

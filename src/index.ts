@@ -3,7 +3,7 @@ import { join } from 'path';
 require('dotenv').config();
 const gradient = require('gradient-string');
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient } = require('mongodb');
 
 const { ApolloServer, gql } = require('apollo-server');
 import { loadSchemaSync } from '@graphql-tools/load';
@@ -11,6 +11,7 @@ import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 
 import { post } from './resolvers/post';
 import { comment } from './resolvers/comment';
+import { user } from './resolvers/user';
 
 const color = gradient(['#436ebc', 'f00']);
 
@@ -19,6 +20,6 @@ client.connect(() => console.log(`🌴 Connected to ${color('database')}`));
 export const db = client.db();
 
 const schema = loadSchemaSync(join('src', './schemas/*.gql'), { loaders: [new GraphQLFileLoader()] });
-const server = new ApolloServer({ typeDefs: schema, resolvers: [post, comment] });
+const server = new ApolloServer({ typeDefs: schema, resolvers: [post, comment, user] });
 
 server.listen(9000).then(({ url }: { url: Url }) => console.log(`🌴 Server listening on ${color(url)}`));
