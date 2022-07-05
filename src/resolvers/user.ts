@@ -1,4 +1,5 @@
 import { db } from '../index';
+import { validate } from 'email-validator';
 
 export const user = {
   Query: {
@@ -18,6 +19,11 @@ export const user = {
   Mutation: {
     registerUser: async (_: any, { username, email, password, createdAt }: { username: string; email: string; password: string; createdAt: string }) => {
       if (username.length === 0 || email.length === 0 || password.length < 8) return 'failure';
+
+      if (validate(email) === false) return 'email_invalid';
+
+      const user = await db.collection('users').findOne({ email });
+      if (user !== null) return 'email_already_used';
 
       await db.collection('users').insertOne({
         username,
