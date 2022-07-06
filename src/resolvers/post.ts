@@ -3,8 +3,18 @@ import { db } from '../index';
 
 export const post = {
   Query: {
-    post: async (_: any, { id }: { id: string }) => {
-      const { author, title, content, comments, createdAt } = await db.collection('posts').findOne({ _id: new ObjectId(id) });
+    post: async (_: any, { id, commentsLimit, commentsOffset }: { id: string; commentsLimit: number; commentsOffset: number }) => {
+      const { author, title, content, createdAt } = await db.collection('posts').findOne({ _id: new ObjectId(id) });
+
+      const comments = await db
+        .collection('comments')
+        .find({ replyingTo: new ObjectId(id) })
+        .skip(commentsOffset)
+        .limit(commentsLimit)
+        .sort({ createdAt: -1 })
+        .toArray();
+
+      const commentsWithIDS = comments.map((obj: any, index: number) => ({ ...obj, id: comments[index]._id }));
 
       return {
         id,
@@ -12,10 +22,7 @@ export const post = {
         title,
         content,
         createdAt,
-        comments: await db
-          .collection('comments')
-          .find({ replyingTo: new ObjectId(id) })
-          .toArray()
+        comments: commentsWithIDS
       };
     },
     posts: async (_: any, { limit, offset }: { limit: number; offset: number }) => {

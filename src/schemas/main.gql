@@ -1,5 +1,5 @@
 type Query {
-  post(id: ID!): Post!
+  post(id: ID!, commentsLimit: Int!, commentsOffset: Int!): Post!
   posts(limit: Int!, offset: Int!): [Post!]!
   login(email: String!, password: String!): LoginResponse
 }
