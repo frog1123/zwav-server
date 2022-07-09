@@ -5,7 +5,7 @@ const gradient = require('gradient-string');
 
 const { MongoClient } = require('mongodb');
 
-const { ApolloServer, gql } = require('apollo-server');
+const { ApolloServer } = require('apollo-server');
 import { loadSchemaSync } from '@graphql-tools/load';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 
