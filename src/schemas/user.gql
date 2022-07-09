@@ -1,8 +1,7 @@
-type User {
+type UserResponse {
   id: ID!
   username: String!
-  posts: [Post!]!
-  comments: [Comment!]!
+  email: String!
   createdAt: String!
 }
 

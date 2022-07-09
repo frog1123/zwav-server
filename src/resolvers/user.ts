@@ -1,5 +1,6 @@
 import { db } from '../index';
 import { validate } from 'email-validator';
+import { ObjectId } from 'mongodb';
 
 export const user = {
   Query: {
@@ -13,6 +14,16 @@ export const user = {
       return {
         id: user._id,
         response: 'success'
+      };
+    },
+    user: async (_: any, { id }: { id: string }) => {
+      const user = await db.collection('users').findOne({ _id: new ObjectId(id) });
+
+      return {
+        id: id,
+        username: user.username,
+        email: user.email,
+        createdAt: user.createdAt
       };
     }
   },
