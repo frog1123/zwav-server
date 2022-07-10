@@ -29,6 +29,7 @@ export const user = {
   },
   Mutation: {
     registerUser: async (_: any, { username, email, password, createdAt }: { username: string; email: string; password: string; createdAt: string }) => {
+      if (username.length > 29) return;
       if (username.length === 0 || email.length === 0 || password.length < 8) return 'failure';
 
       if (validate(email) === false) return 'email_invalid';
