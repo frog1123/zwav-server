@@ -25,8 +25,11 @@ export const post = {
         comments: commentsWithIDS
       };
     },
-    posts: async (_: any, { limit, offset }: { limit: number; offset: number }) => {
-      const posts = await db.collection('posts').find({}).skip(offset).limit(limit).sort({ createdAt: -1 }).toArray();
+    posts: async (_: any, { user, limit, offset }: { user: string; limit: number; offset: number }) => {
+      let posts: Array<any>;
+
+      if (user === 'any') posts = await db.collection('posts').find({}).skip(offset).limit(limit).sort({ createdAt: -1 }).toArray();
+      else posts = await db.collection('posts').find({ author: user }).skip(offset).limit(limit).sort({ createdAt: -1 }).toArray();
 
       const postsWithIDs = posts.map((obj: any, index: number) => ({ ...obj, id: posts[index]._id }));
       return postsWithIDs;
