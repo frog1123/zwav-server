@@ -11,5 +11,6 @@ type Comment {
   id: ID!
   author: String!
   content: String!
+  replyingTo: String!
   createdAt: String!
 }
