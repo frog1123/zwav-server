@@ -20,6 +20,6 @@ client.connect(() => console.log(`🌴 Connected to ${color('database')}`));
 export const db = client.db();
 
 const schema = loadSchemaSync(join('src', './schemas/*.gql'), { loaders: [new GraphQLFileLoader()] });
-const server = new ApolloServer({ typeDefs: schema, resolvers: [post, comment, user] });
+const server = new ApolloServer({ typeDefs: schema, resolvers: [post, comment, user], cors: { origin: ['http://localhost:3000', 'https://studio.apollographql.com'] } });
 
-server.listen(9000).then(({ url }: { url: Url }) => console.log(`🌴 Server listening on ${color(url)}`));
+server.listen(process.env.PORT ?? 9000).then(({ url }: { url: Url }) => console.log(`🌴 Server listening on ${color(url)}`));

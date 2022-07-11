@@ -7,6 +7,7 @@
     "start:dev": "concurrently \"tsc -w\" \"nodemon dist/index.js\""
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/node": "^18.0.0",
     "concurrently": "^7.2.2",
     "dotenv": "^16.0.1",
@@ -16,6 +17,7 @@
     "@graphql-tools/graphql-file-loader": "^7.4.0",
     "@graphql-tools/load": "^7.7.0",
     "apollo-server": "^3.9.0",
+    "bcrypt": "^5.0.1",
     "email-validator": "^2.0.4",
     "gradient-string": "^2.0.1",
     "graphql": "^16.5.0"

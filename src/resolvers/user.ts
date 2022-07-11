@@ -1,6 +1,7 @@
 import { db } from '../index';
 import { validate } from 'email-validator';
 import { ObjectId } from 'mongodb';
+import { genSalt, hash, compare } from 'bcrypt';
 
 export const user = {
   Query: {
@@ -9,7 +10,8 @@ export const user = {
 
       const user = await db.collection('users').findOne({ email });
       if (!user) return { response: 'user_does_not_exist' };
-      if (user.password !== password) return { response: 'wrong_password' };
+
+      if ((await compare(password, user.password)) === false) return { response: 'wrong_password' };
 
       return {
         id: user._id,
@@ -37,10 +39,13 @@ export const user = {
       const user = await db.collection('users').findOne({ email });
       if (user !== null) return 'email_already_used';
 
+      const salt = await genSalt(10);
+      const hashedPassword = await hash(password, salt);
+
       await db.collection('users').insertOne({
         username,
         email,
-        password,
+        password: hashedPassword,
         createdAt
       });
 
