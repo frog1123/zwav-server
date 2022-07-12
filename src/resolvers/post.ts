@@ -4,7 +4,7 @@ import { db } from '../index';
 export const post = {
   Query: {
     post: async (_: any, { id, commentsLimit, commentsOffset }: { id: string; commentsLimit: number; commentsOffset: number }) => {
-      const { title, content, createdAt } = await db.collection('posts').findOne({ _id: new ObjectId(id) });
+      const { title, content, author, createdAt } = await db.collection('posts').findOne({ _id: new ObjectId(id) });
 
       const comments = await db
         .collection('comments')
@@ -16,25 +16,31 @@ export const post = {
 
       const commentsWithInfo = await Promise.all(
         comments.map(async (obj: any, index: number) => {
-          const { _id, username, createdAt } = await db.collection('users').findOne({ _id: new ObjectId(comments[0].author) });
+          const { _id, username, pfpLink, bannerColor, createdAt } = await db.collection('users').findOne({ _id: new ObjectId(comments[0].author) });
           return {
             ...obj,
             id: comments[index]._id,
             author: {
               id: _id,
               username,
+              pfpLink,
+              bannerColor,
               createdAt
             }
           };
         })
       );
 
+      const authorInfo = await db.collection('users').findOne({ _id: new ObjectId(author) });
+
       return {
         id,
         author: {
-          id: '123',
-          username: 'asd',
-          createdAt: '12323'
+          id: authorInfo._id,
+          username: authorInfo.username,
+          pfpLink: authorInfo.pfpLink,
+          bannerColor: authorInfo.bannerColor,
+          createdAt: authorInfo.createdAt
         },
         title,
         content,
@@ -49,7 +55,7 @@ export const post = {
       else posts = await db.collection('posts').find({ author: user }).skip(offset).limit(limit).sort({ createdAt: -1 }).toArray();
 
       const postsWithInfo = posts.map(async (obj: any, index: number) => {
-        const { _id, username, createdAt } = await db.collection('users').findOne({ _id: new ObjectId(posts[index].author) });
+        const { _id, username, pfpLink, bannerColor, createdAt } = await db.collection('users').findOne({ _id: new ObjectId(posts[index].author) });
 
         return {
           ...obj,
@@ -57,6 +63,8 @@ export const post = {
           author: {
             id: _id,
             username,
+            pfpLink,
+            bannerColor,
             createdAt
           }
         };

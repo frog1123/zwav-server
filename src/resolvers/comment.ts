@@ -19,12 +19,16 @@ export const comment = {
               author: {
                 id: replyingTo._id,
                 username: replyingTo.username,
+                pfpLink: replyingTo.pfpLink,
+                bannerColor: replyingTo.bannerColor,
                 createdAt: replyingTo.createdAt
               }
             },
             author: {
               id: author._id,
               username: author.username,
+              pfpLink: author.pfpLink,
+              bannerColor: author.bannerColor,
               createdAt: author.createdAt
             }
           };

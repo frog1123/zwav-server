@@ -19,11 +19,13 @@ export const user = {
       };
     },
     user: async (_: any, { id }: { id: string }) => {
-      const { _id, username, createdAt } = await db.collection('users').findOne({ _id: new ObjectId(id) });
+      const { _id, username, pfpLink, bannerColor, createdAt } = await db.collection('users').findOne({ _id: new ObjectId(id) });
 
       return {
         id: _id,
         username,
+        pfpLink,
+        bannerColor,
         createdAt
       };
     }
@@ -41,10 +43,14 @@ export const user = {
       const salt = await genSalt(10);
       const hashedPassword = await hash(password, salt);
 
+      const colors = ['#cdb4db', '#ffc8dd', '#bde0fe', '#a2d2ff', '#2a9d8f', '#f77f00', '#00f5d4', '#588157', '#b5179e', '#52796f', '#98f5e1', '#212529'];
+
       await db.collection('users').insertOne({
         username,
         email,
         password: hashedPassword,
+        pfpLink: 'https://brandeps.com/icon-download/A/Account-circle-icon-vector-01.svg',
+        bannerColor: colors[Math.floor(Math.random() * colors.length)],
         createdAt
       });
 
