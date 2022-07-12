@@ -4,7 +4,7 @@ import { db } from '../index';
 export const post = {
   Query: {
     post: async (_: any, { id, commentsLimit, commentsOffset }: { id: string; commentsLimit: number; commentsOffset: number }) => {
-      const { author, title, content, createdAt } = await db.collection('posts').findOne({ _id: new ObjectId(id) });
+      const { title, content, createdAt } = await db.collection('posts').findOne({ _id: new ObjectId(id) });
 
       const comments = await db
         .collection('comments')
@@ -14,15 +14,32 @@ export const post = {
         .sort({ createdAt: -1 })
         .toArray();
 
-      const commentsWithIDS = comments.map((obj: any, index: number) => ({ ...obj, id: comments[index]._id }));
+      const commentsWithInfo = await Promise.all(
+        comments.map(async (obj: any, index: number) => {
+          const { _id, username, createdAt } = await db.collection('users').findOne({ _id: new ObjectId(comments[0].author) });
+          return {
+            ...obj,
+            id: comments[index]._id,
+            author: {
+              id: _id,
+              username,
+              createdAt
+            }
+          };
+        })
+      );
 
       return {
         id,
-        author,
+        author: {
+          id: '123',
+          username: 'asd',
+          createdAt: '12323'
+        },
         title,
         content,
         createdAt,
-        comments: commentsWithIDS
+        comments: commentsWithInfo
       };
     },
     posts: async (_: any, { user, limit, offset }: { user: string; limit: number; offset: number }) => {
@@ -31,8 +48,20 @@ export const post = {
       if (user === 'any') posts = await db.collection('posts').find({}).skip(offset).limit(limit).sort({ createdAt: -1 }).toArray();
       else posts = await db.collection('posts').find({ author: user }).skip(offset).limit(limit).sort({ createdAt: -1 }).toArray();
 
-      const postsWithIDs = posts.map((obj: any, index: number) => ({ ...obj, id: posts[index]._id }));
-      return postsWithIDs;
+      const postsWithInfo = posts.map(async (obj: any, index: number) => {
+        const { _id, username, createdAt } = await db.collection('users').findOne({ _id: new ObjectId(posts[index].author) });
+
+        return {
+          ...obj,
+          id: posts[index]._id,
+          author: {
+            id: _id,
+            username,
+            createdAt
+          }
+        };
+      });
+      return postsWithInfo;
     }
   },
 

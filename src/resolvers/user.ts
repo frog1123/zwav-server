@@ -19,13 +19,12 @@ export const user = {
       };
     },
     user: async (_: any, { id }: { id: string }) => {
-      const user = await db.collection('users').findOne({ _id: new ObjectId(id) });
+      const { _id, username, createdAt } = await db.collection('users').findOne({ _id: new ObjectId(id) });
 
       return {
-        id: id,
-        username: user.username,
-        email: user.email,
-        createdAt: user.createdAt
+        id: _id,
+        username,
+        createdAt
       };
     }
   },

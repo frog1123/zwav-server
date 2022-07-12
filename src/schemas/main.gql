@@ -3,7 +3,7 @@ type Query {
   posts(user: ID!, limit: Int!, offset: Int!): [Post!]!
   comments(user: ID!, limit: Int!, offset: Int!): [Comment!]!
   login(email: String!, password: String!): LoginResponse
-  user(id: ID!): UserResponse!
+  user(id: ID!): User!
 }
 
 type Mutation {
