@@ -8,5 +8,6 @@ type User {
 
 type LoginResponse {
   id: ID
+  accessToken: String
   response: String!
 }

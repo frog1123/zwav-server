@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { db } from '../index';
+import { db } from '../../index';
 
 export const comment = {
   Query: {
