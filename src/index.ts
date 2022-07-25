@@ -6,7 +6,7 @@ const { MongoClient } = require('mongodb');
 import { ApolloServer } from 'apollo-server-express';
 import { loadSchemaSync } from '@graphql-tools/load';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
-import express from 'express';
+import express, { Request as req, Response as res } from 'express';
 const cors = require('express-cors');
 
 //rest
@@ -26,7 +26,7 @@ export const db = client.db();
 (async () => {
   const app = express();
 
-  app.use(cors({ allowedOrgins: ['http://localhost:3000', 'https://studio.apollographql.com'] }));
+  app.use(cors({ credentials: true, allowedOrgins: ['http://localhost:3000', 'https://studio.apollographql.com'] }));
 
   app.use('/rest', hello);
 
@@ -34,11 +34,17 @@ export const db = client.db();
   const server = new ApolloServer({
     typeDefs: schema,
     resolvers: [post, comment, user],
-    context: ({ req, res }) => ({ req, res })
+    context: ({ req, res }: { req: req; res: res }) => ({ req, res })
   });
 
   await server.start();
-  server.applyMiddleware({ app });
+  server.applyMiddleware({
+    app,
+    cors: {
+      credentials: true,
+      origin: ['http://localhost:3000', 'https://studio.apollographql.com']
+    }
+  });
 
   app.listen(process.env.PORT ?? 9000, () => console.log(`🌴 Server listening on port ${color(process.env.PORT ?? 9000)}`));
 })();

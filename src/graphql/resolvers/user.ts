@@ -15,6 +15,22 @@ export const user = {
         bannerColor,
         createdAt
       };
+    },
+    login: async (_: any, { email, password }: { email: string; password: string }, { req, res }: any) => {
+      if (email.length === 0 || password.length === 0) return { response: 'failure' };
+
+      const user = await db.collection('users').findOne({ email });
+      if (!user) return { response: 'user_does_not_exist' };
+
+      if (!(await compare(password, user.password))) return { response: 'wrong_password' };
+
+      res.cookie('asdasdasd', 'wwwwww');
+      console.log(req.headers);
+
+      return {
+        id: user._id,
+        response: 'success'
+      };
     }
   },
   Mutation: {
@@ -41,19 +57,6 @@ export const user = {
       });
 
       return 'success';
-    },
-    login: async (_: any, { email, password }: { email: string; password: string }) => {
-      if (email.length === 0 || password.length === 0) return { response: 'failure' };
-
-      const user = await db.collection('users').findOne({ email });
-      if (!user) return { response: 'user_does_not_exist' };
-
-      if (!(await compare(password, user.password))) return { response: 'wrong_password' };
-
-      return {
-        id: user._id,
-        response: 'success'
-      };
     }
   }
 };
