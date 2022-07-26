@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { db } from '../../index';
+import { compare } from 'bcrypt';
 
 export const post = {
   Query: {
@@ -74,8 +75,11 @@ export const post = {
   },
 
   Mutation: {
-    createPost: async (_: any, { author, title, content, createdAt }: { author: string; title: string; content: string; createdAt: string }) => {
+    createPost: async (_: any, { author, title, content, createdAt }: { author: string; title: string; content: string; createdAt: string }, { req }: any) => {
+      const user = await db.collection('users').findOne({ _id: new ObjectId(author) });
+
       if (title.length === 0) return;
+      if (!(await compare(user._id.toString(), req.session.user_id))) return;
 
       await db.collection('posts').insertOne({
         author,

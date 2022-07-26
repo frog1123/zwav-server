@@ -4,6 +4,8 @@ type Query {
   comments(user: ID!, limit: Int!, offset: Int!): [Comment!]!
   user(id: ID!): User!
   login(email: String!, password: String!): LoginResponse!
+  logout: String!
+  refreshUser: String!
 }
 
 type Mutation {

@@ -16,7 +16,7 @@ export const user = {
         createdAt
       };
     },
-    login: async (_: any, { email, password }: { email: string; password: string }, { req, res }: any) => {
+    login: async (_: any, { email, password }: { email: string; password: string }, { req }: any) => {
       if (email.length === 0 || password.length === 0) return { response: 'failure' };
 
       const user = await db.collection('users').findOne({ email });
@@ -24,13 +24,23 @@ export const user = {
 
       if (!(await compare(password, user.password))) return { response: 'wrong_password' };
 
-      res.cookie('asdasdasd', 'wwwwww');
-      console.log(req.headers);
+      const hashedId = await hash(user._id.toString(), 5);
+      req.session.user_id = hashedId;
 
       return {
         id: user._id,
         response: 'success'
       };
+    },
+    logout: (_: any, __: any, { req, res }: any) => {
+      res.clearCookie('connect.sid');
+      res.clearCookie('currentUserId');
+      req.session.destroy();
+      return 'success';
+    },
+    refreshUser: (_: any, __: any, { req }: any) => {
+      req.session.touch();
+      return 'success';
     }
   },
   Mutation: {

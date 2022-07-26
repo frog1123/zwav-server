@@ -7,6 +7,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { loadSchemaSync } from '@graphql-tools/load';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import express, { Request as req, Response as res } from 'express';
+import session from 'express-session';
 const cors = require('express-cors');
 
 //rest
@@ -26,8 +27,18 @@ export const db = client.db();
 (async () => {
   const app = express();
 
+  app.use(
+    session({
+      secret: 'frog',
+      cookie: {
+        maxAge: 15 * 1000,
+        secure: false // change later
+      },
+      resave: true,
+      saveUninitialized: false
+    })
+  );
   app.use(cors({ credentials: true, allowedOrgins: ['http://localhost:3000', 'https://studio.apollographql.com'] }));
-
   app.use('/rest', hello);
 
   const schema = loadSchemaSync(join('src', './graphql/schemas/*.gql'), { loaders: [new GraphQLFileLoader()] });
